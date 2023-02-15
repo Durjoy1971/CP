@@ -25,12 +25,12 @@ typedef tree<pair<int, int>, null_type, less<pair<int, int>>, rb_tree_tag, tree_
 #define ll long long int
 #define ld long double
 #define PI 2 * acos(0.0)
-#define tani(a) atan(a)/(PI/180)
-#define sini(a) asin(a)/(PI/180)
-#define cosi(a) acos(a)/(PI/180)
-#define cos(a)  cos(a*PI/180)
-#define sin(a)  sin(a*PI/180)
-#define tan(a)  tan(a*PI/180)
+#define tani(a) atan(a) / (PI / 180)
+#define sini(a) asin(a) / (PI / 180)
+#define cosi(a) acos(a) / (PI / 180)
+#define cos(a) cos(a *PI / 180)
+#define sin(a) sin(a *PI / 180)
+#define tan(a) tan(a *PI / 180)
 #define mem(arr, fix) memset(arr, fix, sizeof(arr))
 #define eps 1e-6
 #define mkp make_pair
@@ -172,10 +172,10 @@ ll t_sum(ll v, ll tl, ll tr, ll l, ll r)
     if(l == tl && r == tr) return t[v];
     ll tm = (tl+tr)/2;
     return t_sum(v*2,tl,tm,l,min(r,tm)) + t_sum(v*2+1,tm+1,tr,max(l,tm+1),r);
-}   
+}
 
 // v-> SegTree r Main Root, tl and tr -> Range Of SegTree
-void update(ll v, ll tl, ll tr, ll pos, ll new_val){ 
+void update(ll v, ll tl, ll tr, ll pos, ll new_val){
     if(tl == tr)
     {
         t[v] = new_val;
@@ -263,9 +263,9 @@ void print(int *ar, int n) {
 
 /*
 
-    // Sparse Table
+// Sparse Table
 
-    const int sz = 2e5 + 5;
+const int sz = 2e5 + 5;
 const int LOG = 18;
 int ar[sz];
 int m[sz][LOG];
@@ -302,6 +302,7 @@ void So_Much_Pain()
         cin >> ar[i];
         m[i][0] = ar[i];
     }
+
     // 2) Preprocessing (O(N*log(N)))
     for (int k = 1; k < LOG; k++)
     {
@@ -310,10 +311,9 @@ void So_Much_Pain()
             m[i][k] = min(m[i][k - 1], m[i + (1 << (k - 1))][k - 1]);
         }
     }
+
     // 3) Answer Queries
-
     //cin >> q;
-
     for (int i = 0; i < q; i++)
     {
         int left, right;
@@ -322,6 +322,7 @@ void So_Much_Pain()
         cout << query(left-1, right-1) << nl;
     }
 }
+
 */
 
 /*
@@ -1324,10 +1325,10 @@ ll t_minimum(ll v, ll tl, ll tr, ll l, ll r)
     if(l == tl && r == tr) return t[v];
     ll tm = (tl+tr)/2;
     return min(t_minimum(v*2,tl,tm,l,min(r,tm)),t_minimum(v*2+1,tm+1,tr,max(l,tm+1),r));
-}   
+}
 
 // v-> SegTree r Main Root, tl and tr -> Range Of SegTree
-void update(ll v, ll tl, ll tr, ll pos, ll new_val){ 
+void update(ll v, ll tl, ll tr, ll pos, ll new_val){
     if(tl == tr)
     {
         t[v] = new_val;
@@ -1344,7 +1345,6 @@ void update(ll v, ll tl, ll tr, ll pos, ll new_val){
 }
 
 */
-
 
 /*
 
@@ -1414,21 +1414,127 @@ void update(ll v, ll tl, ll tr, ll pos, ll new_val)
 
 */
 
+/*
+
+// Segment Tree With Lazy Propagation
+
+ll arr[200005], st[1000005], lazy[1000005];
+void build(ll si, ll ss, ll se)
+{
+    if (ss == se)
+    {
+        st[si] = arr[ss];
+        return;
+    }
+    ll mid = (ss + se) / 2;
+    build(2 * si, ss, mid);
+    build(2 * si + 1, mid + 1, se);
+    st[si] = st[2 * si] + st[2 * si + 1];
+}
+void update(ll si, ll ss, ll se, ll qs, ll qe, ll val)
+{
+    if (lazy[si] != 0)
+    {
+        ll dx = lazy[si];
+        lazy[si] = 0;
+        st[si] += (dx * (se - ss + 1));
+        if (ss != se)
+        {
+            lazy[2 * si] += dx;
+            lazy[2 * si + 1] += dx;
+        }
+    }
+    if (se < qs || qe < ss)
+        return;
+    else if (qs <= ss && qe >= se)
+    {
+        ll dx = val;
+        st[si] += (dx * (se - ss + 1));
+        if (ss != se)
+        {
+            lazy[2 * si] += dx;
+            lazy[2 * si + 1] += dx;
+        }
+        return;
+    }
+    ll mid = (ss + se) / 2;
+    update(2 * si, ss, mid, qs, qe, val);
+    update(2 * si+1, mid+1, se, qs, qe, val);
+
+    st[si]=st[2*si]+st[2*si+1];
+}
+ll query(ll si,ll ss,ll se,ll qs,ll qe)
+{
+    if (lazy[si] != 0)
+    {
+        ll dx = lazy[si];
+        lazy[si] = 0;
+        st[si] += (dx * (se - ss + 1));
+        if (ss != se)
+        {
+            lazy[2 * si] += dx;
+            lazy[2 * si + 1] += dx;
+        }
+    }
+    if (se < qs || qe < ss)
+        return 0;
+    else if (qs <= ss && qe >= se)
+    {
+        return st[si];
+    }
+    ll mid = (ss + se) / 2;
+    return query(2 * si, ss, mid, qs, qe)+query(2 * si+1, mid+1, se, qs, qe);
+}
+
+input:
+
+int n, q;
+cin >> n >> q;
+for (ll i = 1; i <= n; i++)
+{
+    cin >> arr[i];
+}
+build(1,1,n);
+update(1,1,n,l,r,val);
+cout << query(1,1,n,k,k) << endl;
+
+*/
+
+/*
+
+Ternary Search
+
+
+
+
+*/
+
+
+
 // Main Codes Start Here
 void Solve()
 {
     ll i, j;
 
-    os01 st;
+    ordered_set1 st;
 
-    st.insert({5,1});
-    st.insert({55,2});
-    st.insert({5,2});
+    int n; cin >> n;
+    int ar[n+5];
 
-    for(auto x: st)
+    for(i=1;i<=n;i++)
     {
-        cout << x.ff << sp << x.ss << nl;
+        cin >> ar[i];
+        st.insert(i);
     }
+
+    for(i=n;i>1;i--)
+    {
+        int pos = i-ar[i];
+        st.erase(st.find_by_order(pos-1));
+    }
+
+    cout << *st.begin() << nl;
+
 
 }
 
@@ -1442,8 +1548,10 @@ int main()
 
     cin >> t;
 
-    while (t--)
+    for(int i = 1; i <= t; i++)
     {
+        cout << "Case " << i << ": ";
+        // cout << nl;
         Solve();
     }
 
