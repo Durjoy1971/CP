@@ -10,6 +10,7 @@ using namespace __gnu_pbds;
 // template<class T> using oset = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> ordered_set1; // less => Small to Big
 typedef tree<int, null_type, greater<int>, rb_tree_tag, tree_order_statistics_node_update> ordered_set2;
+
 // For Pair
 typedef tree<pair<int, int>, null_type, less<pair<int, int>>, rb_tree_tag, tree_order_statistics_node_update> ordered_set3;
 
@@ -82,6 +83,24 @@ ll sum_digit(ll x)
     }
     return sum;
 }
+ll combination(ll a, ll b)
+{
+    if ((a == b) || (b == 0))
+    {
+        return 1;
+    }
+    if (a < b)
+        return 0;
+    ll ret = 1;
+    for (ll i = 0; i < b; i++)
+    {
+        ret *= (a - i);
+        ret %= mod;
+        ret *= bigmod(i + 1, mod - 2, mod);
+        ret %= mod;
+    }
+    return ret;
+}
 ll factorial(ll n)
 {
     ll i, ans = 1;
@@ -135,6 +154,11 @@ ll bigmod(ll b, ll p, ll m)
     if (p % 2)
         x = (x * b) % m;
     return x;
+}
+
+ll inv_mod(ll a, ll m)
+{
+    return bigmod(a, m - 2, m);
 }
 
 /*
@@ -1510,32 +1534,170 @@ Ternary Search
 */
 
 
+/*
+
+//  KMP => Calculate the indices of the occurrences of string s in t 
+//  Time Complexity : N+M 
+
+const int N = 3e5 + 9;
+
+// returns the longest proper prefix array of pattern p
+// where lps[i]=longest proper prefix which is also suffix of p[0...i]
+vector<int> build_lps(string p) {
+  int sz = p.size();
+  vector<int> lps;
+  lps.assign(sz + 1, 0);
+  int j = 0;
+  lps[0] = 0;
+  for(int i = 1; i < sz; i++) {
+    while(j >= 0 && p[i] != p[j]) {
+      if(j >= 1) j = lps[j - 1];
+      else j = -1;
+    }
+    j++;
+    lps[i] = j;
+  }
+  return lps;
+}
+vector<int>ans;
+// returns matches in vector ans in 0-indexed
+void kmp(vector<int> lps, string s, string p) {
+  int psz = p.size(), sz = s.size();
+  int j = 0;
+  for(int i = 0; i < sz; i++) {
+    while(j >= 0 && p[j] != s[i])
+      if(j >= 1) j = lps[j - 1];
+      else j = -1;
+    j++;
+    if(j == psz) {
+      j = lps[j - 1];
+      // pattern found in string s at position i-psz+1
+      ans.push_back(i - psz + 1);
+    }
+    // after each loop we have j=longest common suffix of s[0..i] which is also prefix of p
+  }
+}
+
+int main() {
+  int i, j, k, n, m, t;
+  cin >> t;
+  while(t--) {
+    string s, p;
+    cin >> s >> p;
+    vector<int>lps = build_lps(p);
+    kmp(lps, s, p);
+    if(ans.empty()) cout << "Not Found\n";
+    else {
+      cout << ans.size() << endl;
+      for(auto x : ans) cout << x << ' ';
+      cout << endl;
+    }
+    ans.clear();
+    cout << endl;
+  }
+  return 0;
+}
+
+*/
+
+/*
+
+// Template Z function
+
+int z[1000009];
+
+// z[i]=number of elements prefix such that suffix=prefix ; suffix starts from idx i
+//Sample:
+//"aaaaa" - [0,4,3,2,1]
+//"aaabaab" - [0,2,1,0,2,1,0]
+//"abacaba" - [0,0,1,0,3,0,1]
+//z[0]=0 or full length of string
+void zfunction(string &s) {
+	ll n = s.size();
+	z[0] = n;  			//if you want that the whole string is a substring of itself.
+	ll L = 0, R = 0;
+	for (int i = 1; i < n; i++) {
+  		if (i > R) {
+    		L = R = i;
+    		while (R < n && s[R-L] == s[R]) R++;
+    		z[i] = R-L; R--;
+	  	}
+	  	else {
+	    	int k = i-L;
+	    	if (z[k] < R-i+1) z[i] = z[k];
+	   		else {
+	     		L = i;
+	    		while (R < n && s[R-L] == s[R]) R++;
+	      			z[i] = R-L; R--;
+	    		}
+	  	}
+	}
+}
+
+int lps[10000009];
+
+//This is a template function for making lps array
+//lps[i]= how many letters in the prefix which is also a suffix ( string = let shuru theke i porjonto ase porer gula bad )
+ 
+string s;
+int sz;
+int chk(int idx)
+{
+    int op1,op2,op,id;
+    op1=z[idx];
+    op2=lps[sz-1];
+    op=min(op1,op2);
+    id=sz-op;
+    if(z[id]==z[idx] && id!=idx)
+    {
+        return z[id];
+    }
+    return -1;
+ 
+}
+
+
+*/
 
 // Main Codes Start Here
 void Solve()
 {
     ll i, j;
 
-    ordered_set1 st;
+    ordered_set1 boro_to_choto, choto_to_boro;
 
-    int n; cin >> n;
-    int ar[n+5];
-
-    for(i=1;i<=n;i++)
+    int n;
+    cin >> n;
+    vi ar;
+    for (i = 0; i < n; i++)
     {
-        cin >> ar[i];
-        st.insert(i);
+        vin(ar);
+        boro_to_choto.insert(num * -1);
     }
 
-    for(i=n;i>1;i--)
+    /* Time Complexity: O(log n)
+        - Order_of_key(k): Number of items strictly smaller then k
+        => name.order_of_key(100);
+        - find_by_order(k): K-th element in a set ( Counting from zero)
+        => *name.find_by_order(5);
+    */
+
+    ll ans = 0;
+
+    for (i = n - 1; i >= 0; i--)
     {
-        int pos = i-ar[i];
-        st.erase(st.find_by_order(pos-1));
+        int num = ar[i];
+        int left_side_option = boro_to_choto.order_of_key(num * -1);
+        boro_to_choto.erase(num * -1);
+        choto_to_boro.insert(num);
+        int right_side_option = choto_to_boro.order_of_key(num);
+
+        // cout << left_side_option << sp << right_side_option << nl;
+
+        ans += left_side_option * 1LL * right_side_option;
     }
 
-    cout << *st.begin() << nl;
-
-
+    cout << ans << nl;
 }
 
 // Main Function
@@ -1546,12 +1708,12 @@ int main()
     //:]
     int t = 1;
 
-    cin >> t;
+    // cin >> t;
 
-    for(int i = 1; i <= t; i++)
+    for (int i = 1; i <= t; i++)
     {
-        cout << "Case " << i << ": ";
-        // cout << nl;
+        // cout << "Case " << i << ": ";
+        //  cout << nl;
         Solve();
     }
 
