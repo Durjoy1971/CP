@@ -162,17 +162,39 @@ ll inv_mod(ll a, ll m)
 }
 
 /*
-
-priority_queue <int> pq; // Boro theke choto
-priority_queue<int, vector<int>, greater<int> > q; // choto theke boro
-
-priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>> q;
-
+001 = priority
+002 = Segment Tree
+003 = Disjoint Set Union
+004 = Binary Indexed Tree | Fenwick Tree
+005 = Sparse Table
+006 = LCM Pair Sum Phi -> GCD Pair Sum Phi
+007 = Euler Segmented Sieve
+008 = Seive Prime Checker
+009 = Find out the first digit of N to the power (n)
+010 = nPr - nCr with MOD
+011 = Modular Inverse
+012 = Euler's Totient Function
+013 = Set
+014 = nCr WithOut MOD
+015 = Simple BFS (Sir) -> Mine
+016 = DFS Circle Detection -> Basic DFS
+017 = Extended GCD
+018 = Kipta Version of Sieve
+019 = Factorization
+020 = bitwise exhaustive search -> BitMasking
+021 = Normal Binary With Upper Bound Then Lower Bound -> Normal Binary
 */
 
 /*
+! 001 Priority Queue
 
-// Normal Segment Tree With Summation
+priority_queue <int> pq; // Boro theke choto
+priority_queue<int, vector<int>, greater<int> > q; // choto theke boro
+priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>> q;
+*/
+
+/*
+! 002 Normal Segment Tree With Summation
 
 const ll MAXN = 100002;
 ll arr[MAXN];
@@ -219,7 +241,44 @@ void update(ll v, ll tl, ll tr, ll pos, ll new_val){
 */
 
 /*
-// Disjoint Set Union
+! 003 Disjoint Set Union
+
+vector<int> lvl, par;
+
+void DSU(int n)
+{
+    lvl.assign(n + 1, 0);
+    par.assign(n + 1, 0);
+
+    for (int i = 1; i <= n; i++)
+    {
+        par[i] = i;
+    }
+}
+
+int FIND(int u)
+{
+    if(par[u] == u) return u;
+    return par[u] = FIND(par[u]);
+}
+
+bool UNION(int u, int v) // return types depend on your requirement
+{
+    int pu = FIND(u);
+    int pv = FIND(v);
+
+    if(pu == pv) return false;
+
+    if(lvl[pu] < lvl[pv]) swap(pu, pv); // Jar lvl besi, she parent hobe.
+
+    par[pv] = pu;
+
+    if(lvl[pu] == lvl[pv]) lvl[pu]++;
+
+    return true;
+}
+
+orrrrr
 
 int p[30];
 
@@ -240,7 +299,7 @@ void Union(int a, int b)
 */
 
 /*
-// Binary Indexed Tree | Fenwick Tree
+! 004 Binary Indexed Tree | Fenwick Tree
 
 #define mx 10000
 int ar[mx];
@@ -286,8 +345,7 @@ void print(int *ar, int n) {
 */
 
 /*
-
-// Sparse Table
+! 005 Sparse Table
 
 const int sz = 2e5 + 5;
 const int LOG = 18;
@@ -350,7 +408,7 @@ void So_Much_Pain()
 */
 
 /*
-    // LCM pair sum with phi
+! 006 LCM pair sum with phi
 
     const int sz = 1e6+10;
 int phi[sz];
@@ -389,8 +447,7 @@ void phi_seive()
 */
 
 /*
-
-    // GCD Pair with Phi [1 to N]
+! 006 = GCD Pair with Phi [1 to N]
 
     const int sz = 1e6+7;
 int phi[sz];
@@ -435,7 +492,7 @@ void gcdpair()
 
 /*
 
-// Euler Segmented Sieve
+! 007 = Euler Segmented Sieve
 
 vector <bool> prime(mx,true);
 vector <int> p_num;
@@ -505,8 +562,7 @@ void kipta_sieve(ll a, ll b)
 */
 
 /*
-
-// seive prime checker
+! 008 = Seive Prime Checker
 
 ll mx = 1LL << 16;
 vector <bool> prime(mx,true);
@@ -550,8 +606,7 @@ void p_checker(ll num)
 */
 
 /*
-
-// Find out the first digit of N to the power (n)
+! 009 = Find out the first digit of N to the power (n)
 
 ll n;
 
@@ -565,7 +620,7 @@ while (cin >> n)
 */
 
 /*
-    // npr
+! 010 = nPr -> nCr
 
     int Fac[1000001];
 ll mod = 1e9+7;
@@ -601,14 +656,15 @@ int n, r;
     cout << nPr(n,r) << nl;
         cout << nCr(n,r) << nl;
 */
+
 /*
-    // Modular Inverse
+! 011 = Modular Inverse
     a to the power inverse one = bigmod(a,m-2,m);
     where m is prime and (a,m) is co-prime.
 */
 
 /*
-    // Euler's Totient Function
+! 012 = Euler's Totient Function
 
     //                              (1)                         //
 Novice Approach(O(n* log(n))
@@ -651,7 +707,6 @@ int phi(int n)     //Time ComPlexity(O(sqrt(n)))
     return res;
 }
 //------------------------------------------------------------------//
-
 //                              (3)                         //
 int phi[100005];
 void phi_seive()
@@ -676,7 +731,9 @@ void phi_seive()
 }
 //------------------------------------------------------------------//
 */
+
 /*
+! 013 = Set
 set<int>S;
 set<int>::iterator it;
 
@@ -686,8 +743,9 @@ for (it=S.begin();it!= S.end();it++)
     }
 
 */
+
 /*
-// Combination (nCr)
+! 014 = nCr WithOut MOD
 long long nCr(ll n, ll r)
 {
     long long p, k;
@@ -711,13 +769,10 @@ long long nCr(ll n, ll r)
 
     return p;
 }
-
-
 */
 
 /*
-
-    // Simple BFS (Sir)
+! 015 = Simple BFS (Sir)
 
 //Function
 vector<int> level;
@@ -780,8 +835,7 @@ int main()
 */
 
 /*
-
-// Simple BFS
+! 015 = Simple BFS
 
 int n, m, c;
 vector<int> arr[10001];
@@ -813,8 +867,7 @@ void BFS(int src)//src = source
 */
 
 /*
-
-// DFS Circle Detection
+! 016 = DFS Circle Detection
 
 #include <bits/stdc++.h>
 #include <windows.h>
@@ -879,8 +932,7 @@ int main()
 */
 
 /*
-
-// Basic DFS
+! 016 = DFS Circle Detection -> Basic DFS
 
 //Function
 int i, j;
@@ -926,16 +978,11 @@ int main()
 
     return 0;
 }
-
 // memset(array name, 0, sizeof(array));
-
-
 */
 
 /*
-
-// Extended GCD
-
+! 017 = Extended GCD
 
 ll egcd(ll a, ll b, ll &x, ll &y)
 {
@@ -957,8 +1004,7 @@ ll egcd(ll a, ll b, ll &x, ll &y)
 */
 
 /*
-
-// Kipta Seive
+! 018 = Kipta Version of Sieve
 
 
 int mx = 1e8;
@@ -983,8 +1029,7 @@ void kipta_sieve()
 */
 
 /*
-
-// Factorization
+! 019 = Factorization
 
  ll n;
     cin >> n;
@@ -1034,8 +1079,7 @@ when n = 3;
 */
 
 /*
-    // bit masking
-
+! 020 = bitwise exhaustive search -> BitMasking
 
     int n, k;cin >> n >> k;
     vector <int> dj(k);for(auto &x : dj) cin >> x;int ans = 0;
@@ -1063,7 +1107,7 @@ when n = 3;
 
 /*
 
-    // Normal Binary With Upper Bound Then Lower Bound
+! 021 = Normal Binary With Upper Bound Then Lower Bound
 
     Trick to Remember
 // Lower Bound -> First pos to insert x ... x <= array r element
@@ -1154,8 +1198,7 @@ int n, k;
 */
 
 /*
-
-    // Normal Binary
+! 021 = Normal Binary With Upper Bound Then Lower Bound -> Normal Binary
 
     //    to avoid    overflow : l + (r-l)/2
     int n, q;
@@ -1533,11 +1576,10 @@ Ternary Search
 
 */
 
-
 /*
 
-//  KMP => Calculate the indices of the occurrences of string s in t 
-//  Time Complexity : N+M 
+//  KMP => Calculate the indices of the occurrences of string s in t
+//  Time Complexity : N+M
 
 const int N = 3e5 + 9;
 
@@ -1613,32 +1655,32 @@ int z[1000009];
 //"abacaba" - [0,0,1,0,3,0,1]
 //z[0]=0 or full length of string
 void zfunction(string &s) {
-	ll n = s.size();
-	z[0] = n;  			//if you want that the whole string is a substring of itself.
-	ll L = 0, R = 0;
-	for (int i = 1; i < n; i++) {
-  		if (i > R) {
-    		L = R = i;
-    		while (R < n && s[R-L] == s[R]) R++;
-    		z[i] = R-L; R--;
-	  	}
-	  	else {
-	    	int k = i-L;
-	    	if (z[k] < R-i+1) z[i] = z[k];
-	   		else {
-	     		L = i;
-	    		while (R < n && s[R-L] == s[R]) R++;
-	      			z[i] = R-L; R--;
-	    		}
-	  	}
-	}
+    ll n = s.size();
+    z[0] = n;  			//if you want that the whole string is a substring of itself.
+    ll L = 0, R = 0;
+    for (int i = 1; i < n; i++) {
+        if (i > R) {
+            L = R = i;
+            while (R < n && s[R-L] == s[R]) R++;
+            z[i] = R-L; R--;
+        }
+        else {
+            int k = i-L;
+            if (z[k] < R-i+1) z[i] = z[k];
+            else {
+                L = i;
+                while (R < n && s[R-L] == s[R]) R++;
+                    z[i] = R-L; R--;
+                }
+        }
+    }
 }
 
 int lps[10000009];
 
 //This is a template function for making lps array
 //lps[i]= how many letters in the prefix which is also a suffix ( string = let shuru theke i porjonto ase porer gula bad )
- 
+
 string s;
 int sz;
 int chk(int idx)
@@ -1653,7 +1695,7 @@ int chk(int idx)
         return z[id];
     }
     return -1;
- 
+
 }
 
 
